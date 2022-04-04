@@ -1,4 +1,6 @@
 {
+    "name": "dilitrust/formation",
+    "description": "Application de démonstration de la formation Symfony",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
