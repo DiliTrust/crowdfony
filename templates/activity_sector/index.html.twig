@@ -13,7 +13,9 @@
 
     <ul>
         {% for activity_sector in activity_sectors %}
-        <li>{{ activity_sector.name }}</li>
+        <li>
+            <a href="{{ path('app_activity_sector_show', {id: activity_sector.id}) }}">{{ activity_sector.name }}</a>
+        </li>
         {% endfor %}
     </ul>
 </div>

@@ -20,4 +20,20 @@ final class ActivitySectorController extends AbstractController
             'activity_sectors' => $repository->findBy(['isEnabled' => true], ['name' => 'ASC']),
         ]);
     }
+
+    /**
+     * @Route("/sectors/{id<\d+>}", name="app_activity_sector_show", methods={"GET"})
+     */
+    public function show(ActivitySectorRepository $repository, int $id): Response
+    {
+        if (! $activitySector = $repository->find($id)) {
+            throw $this->createNotFoundException(\sprintf('Unable to find activity sector identified by ID #%s.', $id));
+        }
+
+        if (! $activitySector->isEnabled()) {
+            throw $this->createNotFoundException(\sprintf('Activity sector identified by ID #%s is not enabled.', $id));
+        }
+
+        return $this->render('activity_sector/show.html.twig', ['activity_sector' => $activitySector]);
+    }
 }

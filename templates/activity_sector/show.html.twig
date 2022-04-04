@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ activity_sector.name }}{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>{{ activity_sector.name }}</h1>
+
+    {% if activity_sector.description is not empty %}
+        <p>{{ activity_sector.description | nl2br }}</p>
+    {% endif %}
+
+    <div>
+        <a href="{{ path('app_activity_sector_list') }}">Back to listing</a>
+    </div>
+</div>
+{% endblock %}
