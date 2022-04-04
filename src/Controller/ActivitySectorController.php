@@ -17,7 +17,7 @@ final class ActivitySectorController extends AbstractController
     public function index(ActivitySectorRepository $repository): Response
     {
         return $this->render('activity_sector/index.html.twig', [
-            'activity_sectors' => $repository->findAll(),
+            'activity_sectors' => $repository->findBy(['isEnabled' => true], ['name' => 'ASC']),
         ]);
     }
 }
