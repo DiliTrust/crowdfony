@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\ActivitySector;
+use App\Factory\ActivitySectorFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -12,27 +12,20 @@ final class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $sectors[] = new ActivitySector('Apparel & accessories, home and personal');
-        $sectors[] = new ActivitySector('Automotive, transport and mobility');
-        $sectors[] = new ActivitySector('Building, property & land management');
-        $sectors[] = $education = new ActivitySector('Education and training');
-        $sectors[] = new ActivitySector('Energy and renewables');
-        $sectors[] = new ActivitySector('Entertainment & media');
-        $sectors[] = new ActivitySector('Financial services & payments');
-        $sectors[] = $fitness = new ActivitySector('Fitness & sports');
-        $sectors[] = new ActivitySector('Food & beverage (FMCG)');
-        $sectors[] = new ActivitySector('Healthtech & healthcare');
-        $sectors[] = new ActivitySector('Leisure, hospitality & tourism');
-        $sectors[] = new ActivitySector('Manufacturing/R&D');
+        ActivitySectorFactory::createOne(['name' => 'Apparel & accessories, home and personal', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Automotive, transport and mobility', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Building, property & land management', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Education and training', 'isEnabled' => false]);
+        ActivitySectorFactory::createOne(['name' => 'Energy and renewables', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Entertainment & media', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Financial services & payments', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Fitness & sports', 'isEnabled' => false]);
+        ActivitySectorFactory::createOne(['name' => 'Food & beverage (FMCG)', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Healthtech & healthcare', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Leisure, hospitality & tourism', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Manufacturing/R&D', 'isEnabled' => true]);
 
-        foreach ($sectors as $sector) {
-            $sector->setIsEnabled(true);
-
-            $manager->persist($sector);
-        }
-
-        $education->setIsEnabled(false);
-        $fitness->setIsEnabled(false);
+        ActivitySectorFactory::createMany(24);
 
         $manager->flush();
     }
