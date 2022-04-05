@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @ORM\Table(uniqueConstraints={
@@ -113,6 +114,10 @@ class CrowdfundingCampaign
 
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+
+        $slugger = new AsciiSlugger();
+
+        $this->slug = $slugger->slug($this->company)->lower() . '--' . $slugger->slug($this->project)->lower();
     }
 
     public function getId(): ?int
