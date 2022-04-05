@@ -41,7 +41,7 @@ final class ActivitySectorFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->unique()->sentence(self::faker()->numberBetween(2, 4)),
+            'name' => self::faker()->unique()->sentence(self::faker()->numberBetween(2, 3)),
             'description' => self::faker()->paragraphs(self::faker()->numberBetween(2, 12), true),
             'isEnabled' => self::faker()->boolean(82),
         ];

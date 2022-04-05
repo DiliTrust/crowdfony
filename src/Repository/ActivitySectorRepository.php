@@ -47,32 +47,11 @@ class ActivitySectorRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return ActivitySector[] Returns an array of ActivitySector objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return ActivitySector[]
+     */
+    public function findActiveSectors(): array
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findBy(['isEnabled' => true], ['name' => 'ASC']);
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ActivitySector
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
