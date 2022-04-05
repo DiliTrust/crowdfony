@@ -54,4 +54,9 @@ class ActivitySectorRepository extends ServiceEntityRepository
     {
         return $this->findBy(['isEnabled' => true], ['name' => 'ASC']);
     }
+
+    public function findActiveSector(int $id): ?ActivitySector
+    {
+        return $this->findOneBy(['id' => $id, 'isEnabled' => true]);
+    }
 }
