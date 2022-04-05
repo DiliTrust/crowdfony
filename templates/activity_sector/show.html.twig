@@ -12,7 +12,7 @@
     <h1>{{ activity_sector.name }}</h1>
 
     {% if activity_sector.description is not empty %}
-        <p>{{ activity_sector.description | nl2br }}</p>
+        <p class="sector-description">{{ activity_sector.description | nl2br }}</p>
     {% endif %}
 
     <div>
