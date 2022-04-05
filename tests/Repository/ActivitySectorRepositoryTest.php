@@ -11,6 +11,37 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class ActivitySectorRepositoryTest extends KernelTestCase
 {
+    /**
+     * @dataProvider provideInactiveSectorName
+     */
+    public function testCannotFindInactiveSector(string $sectorName): void
+    {
+        $repository = static::getContainer()->get(ActivitySectorRepository::class);
+        \assert($repository instanceof ActivitySectorRepository);
+
+        $sector = $repository->findOneBy(['name' => $sectorName]);
+        \assert($sector instanceof ActivitySector);
+
+        $this->assertNull($repository->findActiveSector($sector->getId())); // @phpstan-ignore-line
+    }
+
+    public function provideInactiveSectorName(): \Generator
+    {
+        yield ['Fitness & sports'];
+        yield ['Education and training'];
+    }
+
+    public function testFindOneActiveSector(): void
+    {
+        $repository = static::getContainer()->get(ActivitySectorRepository::class);
+        \assert($repository instanceof ActivitySectorRepository);
+
+        $sector = $repository->findOneBy(['name' => 'Energy and renewables']);
+        \assert($sector instanceof ActivitySector);
+
+        $this->assertSame($sector, $repository->findActiveSector($sector->getId())); // @phpstan-ignore-line
+    }
+
     public function testFindActiveSectors(): void
     {
         $repository = static::getContainer()->get(ActivitySectorRepository::class);
