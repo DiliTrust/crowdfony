@@ -36,7 +36,7 @@ final class AppFixtures extends Fixture
             'activitySector' => $financialServices,
             'company' => 'DiliTrust',
             'project' => 'Trust Suite',
-            'slug' => 'dilitrust--trust-suite',
+            'slug' => 'dilitrust-trust-suite',
             'currency' => 'EUR',
             'country' => 'FR',
             'timezone' => 'Europe/Paris',

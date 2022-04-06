@@ -15,9 +15,9 @@ use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Money\Currency;
 use Money\Money;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @ORM\Table(uniqueConstraints={
@@ -82,6 +82,8 @@ class CrowdfundingCampaign
 
     /**
      * @ORM\Column(length=255)
+     *
+     * @Gedmo\Slug(fields={"company", "project"})
      */
     private ?string $slug = null;
 
@@ -139,11 +141,15 @@ class CrowdfundingCampaign
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @Gedmo\Timestampable(on="create")
      */
     private \DateTimeImmutable $createdAt;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @Gedmo\Timestampable(on="update")
      */
     private \DateTimeImmutable $updatedAt;
 
@@ -162,10 +168,6 @@ class CrowdfundingCampaign
 
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-
-        $slugger = new AsciiSlugger();
-
-        $this->slug = $slugger->slug($this->company)->lower() . '--' . $slugger->slug($this->project)->lower();
     }
 
     public function getId(): ?int
