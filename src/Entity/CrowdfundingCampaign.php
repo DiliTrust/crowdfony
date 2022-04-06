@@ -4,9 +4,19 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Money\Currency;
+use Money\Money;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
@@ -14,6 +24,42 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  *   @ORM\UniqueConstraint("campaign_slug_unique", columns={"slug"}),
  * })
  * @ORM\Entity(repositoryClass=CrowdfundingCampaignRepository::class)
+ *
+ * @ApiResource(
+ *   order={"id": "DESC"},
+ * )
+ * @ApiFilter(
+ *   OrderFilter::class,
+ *   properties={"id", "company", "project", "currency", "country", "status", "activitySector.id"},
+ * )
+ * @ApiFilter(
+ *   SearchFilter::class,
+ *   properties={
+ *     "id": "exact",
+ *     "company": "ipartial",
+ *     "project": "ipartial",
+ *     "country": "exact",
+ *     "currency": "exact",
+ *     "status": "iexact",
+ *     "activitySector.name": "ipartial",
+ *   }
+ * )
+ * @ApiFilter(
+ *   DateFilter::class,
+ *   properties={
+ *     "openingAt": DateFilter::EXCLUDE_NULL,
+ *     "closingAt": DateFilter::EXCLUDE_NULL,
+ *   }
+ * )
+ * @ApiFilter(
+ *   RangeFilter::class,
+ *   properties={"idealFundingTarget"}
+ * )
+ * @ApiFilter(
+ *   ExistsFilter::class,
+ *   properties={"description"}
+ * )
+ * @ApiFilter(PropertyFilter::class)
  */
 class CrowdfundingCampaign
 {
@@ -203,9 +249,13 @@ class CrowdfundingCampaign
         $this->status = $status;
     }
 
-    public function getMinFundingTarget(): ?int
+    public function getMinFundingTarget(): ?Money
     {
-        return $this->minFundingTarget;
+        if ($this->minFundingTarget === null) {
+            return null;
+        }
+
+        return new Money($this->minFundingTarget, new Currency($this->currency));
     }
 
     public function setMinFundingTarget(?int $minFundingTarget): void
@@ -213,9 +263,13 @@ class CrowdfundingCampaign
         $this->minFundingTarget = $minFundingTarget;
     }
 
-    public function getIdealFundingTarget(): ?int
+    public function getIdealFundingTarget(): ?Money
     {
-        return $this->idealFundingTarget;
+        if ($this->idealFundingTarget === null) {
+            return null;
+        }
+
+        return new Money($this->idealFundingTarget, new Currency($this->currency));
     }
 
     public function setIdealFundingTarget(?int $idealFundingTarget): void
@@ -223,9 +277,13 @@ class CrowdfundingCampaign
         $this->idealFundingTarget = $idealFundingTarget;
     }
 
-    public function getMaxFundingTarget(): ?int
+    public function getMaxFundingTarget(): ?Money
     {
-        return $this->maxFundingTarget;
+        if ($this->maxFundingTarget === null) {
+            return null;
+        }
+
+        return new Money($this->maxFundingTarget, new Currency($this->currency));
     }
 
     public function setMaxFundingTarget(?int $maxFundingTarget): void

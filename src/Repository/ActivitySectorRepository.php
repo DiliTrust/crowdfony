@@ -6,6 +6,7 @@ use App\Entity\ActivitySector;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -58,5 +59,14 @@ class ActivitySectorRepository extends ServiceEntityRepository
     public function findActiveSector(int $id): ?ActivitySector
     {
         return $this->findOneBy(['id' => $id, 'isEnabled' => true]);
+    }
+
+    public function addEnabledSectorCriteria(QueryBuilder $queryBuilder): void
+    {
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+
+        $queryBuilder
+            ->andWhere($queryBuilder->expr()->eq($rootAlias . '.isEnabled', ':isEnabled'))
+            ->setParameter('isEnabled', true);
     }
 }

@@ -1,4 +1,18 @@
 {
+    "api-platform/core": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "05b57782a78c21a664a42055dc11cf1954ca36bb"
+        },
+        "files": [
+            "config/packages/api_platform.yaml",
+            "config/routes/api_platform.yaml",
+            "src/Entity/.gitignore"
+        ]
+    },
     "dama/doctrine-test-bundle": {
         "version": "6.7",
         "recipe": {
@@ -110,6 +124,9 @@
     "fakerphp/faker": {
         "version": "v1.19.0"
     },
+    "fig/link-util": {
+        "version": "1.1.2"
+    },
     "fresh/doctrine-enum-bundle": {
         "version": "7.4",
         "recipe": {
@@ -128,11 +145,26 @@
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
+    "moneyphp/money": {
+        "version": "v3.3.1"
+    },
     "monolog/monolog": {
         "version": "2.4.0"
     },
     "myclabs/deep-copy": {
         "version": "1.11.0"
+    },
+    "nelmio/cors-bundle": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
+        ]
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
@@ -690,6 +722,9 @@
     },
     "webmozart/assert": {
         "version": "1.10.0"
+    },
+    "willdurand/negotiation": {
+        "version": "3.1.0"
     },
     "zenstruck/assert": {
         "version": "v1.0.1"
