@@ -19,7 +19,7 @@ final class AppFixtures extends Fixture
         ActivitySectorFactory::createOne(['name' => 'Building, property & land management', 'isEnabled' => true]);
         ActivitySectorFactory::createOne(['name' => 'Education and training', 'isEnabled' => false]);
         ActivitySectorFactory::createOne(['name' => 'Energy and renewables', 'isEnabled' => true]);
-        ActivitySectorFactory::createOne(['name' => 'Entertainment & media', 'isEnabled' => true]);
+        $financialServices = ActivitySectorFactory::createOne(['name' => 'Entertainment & media', 'isEnabled' => true]);
         ActivitySectorFactory::createOne(['name' => 'Financial services & payments', 'isEnabled' => true]);
         ActivitySectorFactory::createOne(['name' => 'Fitness & sports', 'isEnabled' => false]);
         ActivitySectorFactory::createOne(['name' => 'Food & beverage (FMCG)', 'isEnabled' => true]);
@@ -32,6 +32,7 @@ final class AppFixtures extends Fixture
         CrowdfundingCampaignFactory::createMany(17);
 
         CrowdfundingCampaignFactory::createOne([
+            'activitySector' => $financialServices,
             'company' => 'DiliTrust',
             'project' => 'Trust Suite',
             'slug' => 'dilitrust--trust-suite',

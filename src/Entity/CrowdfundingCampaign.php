@@ -105,6 +105,12 @@ class CrowdfundingCampaign
      */
     private \DateTimeImmutable $updatedAt;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ActivitySector::class, inversedBy="campaigns")
+     * @ORM\JoinColumn(nullable=false, onDelete="RESTRICT")
+     */
+    private ?ActivitySector $activitySector = null;
+
     public function __construct(string $company, ?string $project = null, string $currency = 'EUR', string $country = 'FR')
     {
         $this->company = $company;
@@ -279,5 +285,15 @@ class CrowdfundingCampaign
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function getActivitySector(): ?ActivitySector
+    {
+        return $this->activitySector;
+    }
+
+    public function setActivitySector(?ActivitySector $activitySector): void
+    {
+        $this->activitySector = $activitySector;
     }
 }

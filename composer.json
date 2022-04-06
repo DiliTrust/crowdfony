@@ -88,13 +88,23 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
+        "rebuild-db-dev": [
+            "bin/console doctrine:database:drop -e dev --no-interaction --if-exists --force",
+            "bin/console doctrine:database:create -e dev --no-interaction",
+            "bin/console doctrine:migration:migrate -e dev --no-interaction --all-or-nothing --allow-no-migration",
+            "bin/console doctrine:fixtures:load -e dev --no-interaction"
+        ],
+        "rebuild-db-test": [
+            "bin/console doctrine:database:drop -e test --no-interaction --if-exists --force",
+            "bin/console doctrine:database:create -e test --no-interaction",
+            "bin/console doctrine:migration:migrate -e test --no-interaction --all-or-nothing --allow-no-migration",
+            "bin/console doctrine:fixtures:load -e test --no-interaction"
+        ],
         "phpstan": [
             "phpstan analyse"
         ],
         "phpunit": [
-            "bin/console doctrine:database:create -e test --no-interaction --if-not-exists",
-            "bin/console doctrine:migration:migrate -e test --no-interaction --all-or-nothing --allow-no-migration",
-            "bin/console doctrine:fixtures:load -e test --no-interaction",
+            "@rebuild-db-test",
             "bin/phpunit"
         ],
         "run-tests": [

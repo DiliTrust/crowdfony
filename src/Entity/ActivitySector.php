@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ActivitySectorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,9 +39,17 @@ class ActivitySector
      */
     private bool $isEnabled = false;
 
+    /**
+     * @var Collection<int, CrowdfundingCampaign>
+     *
+     * @ORM\OneToMany(targetEntity=CrowdfundingCampaign::class, mappedBy="activitySector")
+     */
+    private Collection $campaigns;
+
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->campaigns = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,5 +90,31 @@ class ActivitySector
     public function setIsEnabled(bool $isEnabled): void
     {
         $this->isEnabled = $isEnabled;
+    }
+
+    /**
+     * @return Collection<int, CrowdfundingCampaign>
+     */
+    public function getCampaigns(): Collection
+    {
+        return $this->campaigns;
+    }
+
+    public function addCampaign(CrowdfundingCampaign $campaign): void
+    {
+        if (! $this->campaigns->contains($campaign)) {
+            $this->campaigns->add($campaign);
+            $campaign->setActivitySector($this);
+        }
+    }
+
+    public function removeCampaign(CrowdfundingCampaign $campaign): void
+    {
+        if ($this->campaigns->removeElement($campaign)) {
+            // set the owning side to null (unless already changed)
+            if ($campaign->getActivitySector() === $this) {
+                $campaign->setActivitySector(null);
+            }
+        }
     }
 }

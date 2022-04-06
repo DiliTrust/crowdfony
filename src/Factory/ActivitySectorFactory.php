@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\ActivitySector;
 use App\Repository\ActivitySectorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Zenstruck\Foundry\RepositoryProxy;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -44,6 +45,7 @@ final class ActivitySectorFactory extends ModelFactory
             'name' => self::faker()->unique()->sentence(self::faker()->numberBetween(2, 3)),
             'description' => self::faker()->paragraphs(self::faker()->numberBetween(2, 12), true),
             'isEnabled' => self::faker()->boolean(82),
+            'campaigns' => new ArrayCollection(),
         ];
     }
 
