@@ -110,6 +110,18 @@
     "fakerphp/faker": {
         "version": "v1.19.0"
     },
+    "fresh/doctrine-enum-bundle": {
+        "version": "7.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "6.0",
+            "ref": "fab86661c13bc12e4f14f706c86af09912d55bfb"
+        },
+        "files": [
+            "src/DBAL/Types/.gitignore"
+        ]
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.7"
     },
