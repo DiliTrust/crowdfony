@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ActivitySectorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,27 +16,43 @@ use Doctrine\ORM\Mapping as ORM;
  *   @ORM\UniqueConstraint("activity_sector_name_unique", columns={"name"}),
  * })
  * @ORM\Entity(repositoryClass=ActivitySectorRepository::class)
+ *
+ * @ApiResource(
+ *   description="The activity sectors that are linked to the `CrowdfundingCampaign` resources.",
+ * )
  */
 class ActivitySector
 {
     /**
+     * The activity sector unique identifier.
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer", options={"unsigned": true})
+     *
+     * @ApiProperty(writable=false, example="140")
      */
     private ?int $id = null;
 
     /**
+     * The activity sector name.
+     *
      * @ORM\Column(length=50)
+     *
+     * @ApiProperty(example="Childcare")
      */
     private string $name = '';
 
     /**
+     * The activity sector description.
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $description = null;
 
     /**
+     * Whether the activity sector is browsable by the users.
+     *
      * @ORM\Column(type="boolean", options={"default": 0})
      */
     private bool $isEnabled = false;

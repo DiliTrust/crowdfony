@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,6 +15,8 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  *   @ORM\UniqueConstraint("campaign_slug_unique", columns={"slug"}),
  * })
  * @ORM\Entity(repositoryClass=CrowdfundingCampaignRepository::class)
+ *
+ * @ApiResource
  */
 class CrowdfundingCampaign
 {
