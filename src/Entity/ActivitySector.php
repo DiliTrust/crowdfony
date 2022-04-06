@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(uniqueConstraints={
@@ -26,6 +27,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *   paginationMaximumItemsPerPage=30,
  *   normalizationContext={
  *     "groups": {"activity_sector:read"},
+ *     "skip_null_values": false,
+ *   },
+ *   denormalizationContext={
+ *     "groups": {"activity_sector:write"},
  *     "skip_null_values": false,
  *   },
  *   itemOperations={
@@ -68,7 +73,15 @@ class ActivitySector
      *
      * @ApiProperty(example="Childcare")
      *
-     * @Groups("activity_sector:read")
+     * @Groups({"activity_sector:read", "activity_sector:write"})
+     *
+     * @Assert\NotBlank(message="The activity sector name is required.")
+     * @Assert\Length(
+     *   min=5,
+     *   max=50,
+     *   minMessage="The activity sector name is too short. It must be at least {{ limit }} characters.",
+     *   maxMessage="The activity sector name is too long. It must be at most {{ limit }} characters.",
+     * )
      */
     private string $name = '';
 
@@ -77,7 +90,13 @@ class ActivitySector
      *
      * @ORM\Column(type="text", nullable=true)
      *
-     * @Groups("activity_sector:read:item")
+     * @Groups({"activity_sector:read:item", "activity_sector:write"})
+     *
+     * @Assert\NotBlank(message="The activity sector description is required.")
+     * @Assert\Length(
+     *   max=2500,
+     *   maxMessage="The activity sector name is too long. It must be at most {{ limit }} characters.",
+     * )
      */
     private ?string $description = null;
 
@@ -86,7 +105,7 @@ class ActivitySector
      *
      * @ORM\Column(type="boolean", options={"default": 0})
      */
-    private bool $isEnabled = false;
+    private bool $isEnabled = true;
 
     /**
      * @var Collection<int, CrowdfundingCampaign>
