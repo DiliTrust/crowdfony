@@ -15,6 +15,8 @@ use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Money\Currency;
+use Money\Money;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
@@ -247,9 +249,13 @@ class CrowdfundingCampaign
         $this->status = $status;
     }
 
-    public function getMinFundingTarget(): ?int
+    public function getMinFundingTarget(): ?Money
     {
-        return $this->minFundingTarget;
+        if ($this->minFundingTarget === null) {
+            return null;
+        }
+
+        return new Money($this->minFundingTarget, new Currency($this->currency));
     }
 
     public function setMinFundingTarget(?int $minFundingTarget): void
@@ -257,9 +263,13 @@ class CrowdfundingCampaign
         $this->minFundingTarget = $minFundingTarget;
     }
 
-    public function getIdealFundingTarget(): ?int
+    public function getIdealFundingTarget(): ?Money
     {
-        return $this->idealFundingTarget;
+        if ($this->idealFundingTarget === null) {
+            return null;
+        }
+
+        return new Money($this->idealFundingTarget, new Currency($this->currency));
     }
 
     public function setIdealFundingTarget(?int $idealFundingTarget): void
@@ -267,9 +277,13 @@ class CrowdfundingCampaign
         $this->idealFundingTarget = $idealFundingTarget;
     }
 
-    public function getMaxFundingTarget(): ?int
+    public function getMaxFundingTarget(): ?Money
     {
-        return $this->maxFundingTarget;
+        if ($this->maxFundingTarget === null) {
+            return null;
+        }
+
+        return new Money($this->maxFundingTarget, new Currency($this->currency));
     }
 
     public function setMaxFundingTarget(?int $maxFundingTarget): void
