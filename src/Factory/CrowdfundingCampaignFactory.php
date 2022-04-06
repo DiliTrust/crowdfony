@@ -46,6 +46,7 @@ final class CrowdfundingCampaignFactory extends ModelFactory
             'currency' => self::faker()->randomElement(['EUR', 'USD', 'CAD', 'GBP']),
             'country' => self::faker()->randomElement(['FR', 'ES', 'IT', 'PT', 'UK', 'US', 'CA']),
             'status' => self::faker()->randomElement([CrowdfundingCampaign::STATUS_DRAFTING, CrowdfundingCampaign::STATUS_OPEN]),
+            'activitySector' => ActivitySectorFactory::random(),
         ];
     }
 
