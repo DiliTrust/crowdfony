@@ -1,4 +1,13 @@
 api_platform:
+
+    title: Crowdfony API
+    description: |
+        This is the **Crowdfony** REST JSON API main page.
+        Use the following endpoints to interact with the applicaton.
+
+    version: 1.0.0
+    show_webby: false
+
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
