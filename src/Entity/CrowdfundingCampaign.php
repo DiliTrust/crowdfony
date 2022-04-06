@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +23,41 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  * })
  * @ORM\Entity(repositoryClass=CrowdfundingCampaignRepository::class)
  *
- * @ApiResource
+ * @ApiResource(
+ *   order={"id": "DESC"},
+ * )
+ * @ApiFilter(
+ *   OrderFilter::class,
+ *   properties={"id", "company", "project", "currency", "country", "status", "activitySector.id"},
+ * )
+ * @ApiFilter(
+ *   SearchFilter::class,
+ *   properties={
+ *     "id": "exact",
+ *     "company": "ipartial",
+ *     "project": "ipartial",
+ *     "country": "exact",
+ *     "currency": "exact",
+ *     "status": "iexact",
+ *     "activitySector.name": "ipartial",
+ *   }
+ * )
+ * @ApiFilter(
+ *   DateFilter::class,
+ *   properties={
+ *     "openingAt": DateFilter::EXCLUDE_NULL,
+ *     "closingAt": DateFilter::EXCLUDE_NULL,
+ *   }
+ * )
+ * @ApiFilter(
+ *   RangeFilter::class,
+ *   properties={"idealFundingTarget"}
+ * )
+ * @ApiFilter(
+ *   ExistsFilter::class,
+ *   properties={"description"}
+ * )
+ * @ApiFilter(PropertyFilter::class)
  */
 class CrowdfundingCampaign
 {

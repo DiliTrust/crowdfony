@@ -19,6 +19,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ApiResource(
  *   description="The activity sectors that are linked to the `CrowdfundingCampaign` resources.",
+ *   order={"name": "ASC"},
+ *   paginationClientEnabled=true,
+ *   paginationItemsPerPage=15,
+ *   paginationMaximumItemsPerPage=30,
  * )
  */
 class ActivitySector

@@ -20,8 +20,8 @@ final class AppFixtures extends Fixture
         ActivitySectorFactory::createOne(['name' => 'Building, property & land management', 'isEnabled' => true]);
         ActivitySectorFactory::createOne(['name' => 'Education and training', 'isEnabled' => false]);
         ActivitySectorFactory::createOne(['name' => 'Energy and renewables', 'isEnabled' => true]);
-        $financialServices = ActivitySectorFactory::createOne(['name' => 'Entertainment & media', 'isEnabled' => true]);
-        ActivitySectorFactory::createOne(['name' => 'Financial services & payments', 'isEnabled' => true]);
+        ActivitySectorFactory::createOne(['name' => 'Entertainment & media', 'isEnabled' => true]);
+        $financialServices = ActivitySectorFactory::createOne(['name' => 'Financial services & payments', 'isEnabled' => true]);
         ActivitySectorFactory::createOne(['name' => 'Fitness & sports', 'isEnabled' => false]);
         ActivitySectorFactory::createOne(['name' => 'Food & beverage (FMCG)', 'isEnabled' => true]);
         ActivitySectorFactory::createOne(['name' => 'Healthtech & healthcare', 'isEnabled' => true]);
