@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use App\DBAL\Types\CampaignStatusType;
 use App\Entity\CrowdfundingCampaign;
 use App\Repository\CrowdfundingCampaignRepository;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -45,7 +46,7 @@ final class CrowdfundingCampaignFactory extends ModelFactory
             'project' => self::faker()->boolean(60) ? self::faker()->unique()->sentence(4) : null,
             'currency' => self::faker()->randomElement(['EUR', 'USD', 'CAD', 'GBP']),
             'country' => self::faker()->randomElement(['FR', 'ES', 'IT', 'PT', 'UK', 'US', 'CA']),
-            'status' => self::faker()->randomElement([CrowdfundingCampaign::STATUS_DRAFTING, CrowdfundingCampaign::STATUS_OPEN]),
+            'status' => self::faker()->randomElement([CampaignStatusType::DRAFTING, CampaignStatusType::OPEN]),
             'activitySector' => ActivitySectorFactory::random(),
         ];
     }
