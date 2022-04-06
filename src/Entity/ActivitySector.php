@@ -10,6 +10,7 @@ use App\Repository\ActivitySectorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(uniqueConstraints={
@@ -23,6 +24,26 @@ use Doctrine\ORM\Mapping as ORM;
  *   paginationClientEnabled=true,
  *   paginationItemsPerPage=15,
  *   paginationMaximumItemsPerPage=30,
+ *   normalizationContext={
+ *     "groups": {"activity_sector:read"},
+ *     "skip_null_values": false,
+ *   },
+ *   itemOperations={
+ *     "get"={
+ *        "normalization_context"={
+ *           "groups"={
+ *             "activity_sector:read",
+ *             "activity_sector:read:item",
+ *           },
+ *        },
+ *        "openapi_context"={
+ *          "summary": "This endpoint returns one complete activity sector",
+ *          "description": "This endpoint returns one complete activity sector resource found by its primary identifier.",
+ *        },
+ *     },
+ *     "put",
+ *     "patch",
+ *   },
  * )
  */
 class ActivitySector
@@ -35,6 +56,8 @@ class ActivitySector
      * @ORM\Column(type="integer", options={"unsigned": true})
      *
      * @ApiProperty(writable=false, example="140")
+     *
+     * @Groups("activity_sector:read")
      */
     private ?int $id = null;
 
@@ -44,6 +67,8 @@ class ActivitySector
      * @ORM\Column(length=50)
      *
      * @ApiProperty(example="Childcare")
+     *
+     * @Groups("activity_sector:read")
      */
     private string $name = '';
 
@@ -51,6 +76,8 @@ class ActivitySector
      * The activity sector description.
      *
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @Groups("activity_sector:read:item")
      */
     private ?string $description = null;
 
