@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\DBAL\Types\CampaignStatusType;
 use App\Entity\CrowdfundingCampaign;
 use App\Factory\ActivitySectorFactory;
 use App\Factory\CrowdfundingCampaignFactory;
@@ -39,7 +40,7 @@ final class AppFixtures extends Fixture
             'currency' => 'EUR',
             'country' => 'FR',
             'timezone' => 'Europe/Paris',
-            'status' => CrowdfundingCampaign::STATUS_COLLECTING_FUNDS,
+            'status' => CampaignStatusType::COLLECTING_FUNDS,
             'description' => CrowdfundingCampaignFactory::faker()->paragraphs(CrowdfundingCampaignFactory::faker()->numberBetween(2, 12), true),
             'openingAt' => new \DateTimeImmutable('-5 days 09:00:00'),
             'closingAt' => new \DateTimeImmutable('+25 days 14:59:59'),

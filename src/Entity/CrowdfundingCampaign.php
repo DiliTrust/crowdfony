@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -16,11 +17,6 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  */
 class CrowdfundingCampaign
 {
-    public const STATUS_DRAFTING = 'drafting';
-    public const STATUS_OPEN = 'open';
-    public const STATUS_COLLECTING_FUNDS = 'collecting_funds';
-    public const STATUS_CLOSED = 'closed';
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -59,11 +55,11 @@ class CrowdfundingCampaign
     private ?string $description = null;
 
     /**
-     * @phpstan-var self::STATUS_*
+     * @phpstan-var CampaignStatusType::*
      *
-     * @ORM\Column(length=30)
+     * @ORM\Column(type="CampaignStatusType")
      */
-    private string $status = self::STATUS_DRAFTING;
+    private string $status = CampaignStatusType::DRAFTING;
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"unsigned": true})
@@ -192,7 +188,7 @@ class CrowdfundingCampaign
     }
 
     /**
-     * @phpstan-return self::STATUS_*
+     * @phpstan-return CampaignStatusType::*
      */
     public function getStatus(): string
     {
@@ -200,7 +196,7 @@ class CrowdfundingCampaign
     }
 
     /**
-     * @phpstan-param self::STATUS_* $status
+     * @phpstan-param CampaignStatusType::* $status
      */
     public function setStatus(string $status): void
     {
