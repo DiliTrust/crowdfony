@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -75,9 +77,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private string $password = '';
 
+    /**
+     * @ORM\OneToMany(targetEntity=FundInvestment::class, mappedBy="investor")
+     */
+    private $portfolio;
+
     public function __construct(string $emailAddress)
     {
         $this->emailAddress = u($emailAddress)->lower()->trim()->toString();
+        $this->portfolio = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,5 +172,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getApiToken(): ?string
     {
         return 'my_custom_api_token';
+    }
+
+    /**
+     * @return Collection<int, FundInvestment>
+     */
+    public function getPortfolio(): Collection
+    {
+        return $this->portfolio;
+    }
+
+    public function addPortfolio(FundInvestment $portfolio): self
+    {
+        if (!$this->portfolio->contains($portfolio)) {
+            $this->portfolio[] = $portfolio;
+            $portfolio->setInvestor($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolio(FundInvestment $portfolio): self
+    {
+        if ($this->portfolio->removeElement($portfolio)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolio->getInvestor() === $this) {
+                $portfolio->setInvestor(null);
+            }
+        }
+
+        return $this;
     }
 }

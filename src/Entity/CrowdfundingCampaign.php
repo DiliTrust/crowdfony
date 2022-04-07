@@ -15,6 +15,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\DBAL\Types\CampaignStatusType;
 use App\Repository\CrowdfundingCampaignRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Money\Currency;
@@ -370,6 +372,11 @@ class CrowdfundingCampaign
      */
     private ?ActivitySector $activitySector = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=FundInvestment::class, mappedBy="campaign")
+     */
+    private $fundInvestments;
+
     public function __construct(string $company, ?string $project = null, string $currency = 'EUR', string $country = 'FR')
     {
         $this->company = $company;
@@ -379,6 +386,7 @@ class CrowdfundingCampaign
 
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->fundInvestments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -623,5 +631,35 @@ class CrowdfundingCampaign
             ->buildViolation('Timezone is required when campaign schedule is defined.')
             ->atPath('timezone')
             ->addViolation();
+    }
+
+    /**
+     * @return Collection<int, FundInvestment>
+     */
+    public function getFundInvestments(): Collection
+    {
+        return $this->fundInvestments;
+    }
+
+    public function addFundInvestment(FundInvestment $fundInvestment): self
+    {
+        if (!$this->fundInvestments->contains($fundInvestment)) {
+            $this->fundInvestments[] = $fundInvestment;
+            $fundInvestment->setCampaign($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFundInvestment(FundInvestment $fundInvestment): self
+    {
+        if ($this->fundInvestments->removeElement($fundInvestment)) {
+            // set the owning side to null (unless already changed)
+            if ($fundInvestment->getCampaign() === $this) {
+                $fundInvestment->setCampaign(null);
+            }
+        }
+
+        return $this;
     }
 }
