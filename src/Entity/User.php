@@ -20,7 +20,16 @@ use function Symfony\Component\String\u;
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  *
- * @ApiResource
+ * @ApiResource(
+ *   itemOperations={
+ *     "get"={
+ *       "security": "is_granted('ROLE_ADMIN') or object == user",
+ *     },
+ *     "put"={
+ *       "security": "is_granted('ROLE_ADMIN') or object == user",
+ *     }
+ *   }
+ * )
  *
  * @UniqueEntity({"emailAddress"}, message="This email address is already taken.", errorPath="emailAddress")
  */
