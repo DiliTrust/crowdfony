@@ -11,6 +11,36 @@ use PHPUnit\Framework\TestCase;
 
 final class CrowdfundingCampaignTest extends TestCase
 {
+    public function testTimezoneIsRequired(): void
+    {
+        $campaign = new CrowdfundingCampaign('Microsoft', 'Hololens', 'USD', 'US');
+        $campaign->setOpeningAt(new \DateTimeImmutable('2022-01-01 10:00:00'));
+        $campaign->setClosingAt(new \DateTimeImmutable('2022-01-31 23:59:59'));
+
+        $this->assertTrue($campaign->isTimezoneRequired());
+    }
+
+    /**
+     * @dataProvider provideTimezoneNotRequiredData
+     */
+    public function testTimezoneIsNotRequired(?\DateTimeImmutable $openingAt, ?\DateTimeImmutable $closingAt, ?string $timezone): void
+    {
+        $campaign = new CrowdfundingCampaign('Microsoft', 'Hololens', 'USD', 'US');
+        $campaign->setOpeningAt($openingAt);
+        $campaign->setClosingAt($closingAt);
+        $campaign->setTimezone($timezone);
+
+        $this->assertFalse($campaign->isTimezoneRequired());
+    }
+
+    public function provideTimezoneNotRequiredData(): \Generator
+    {
+        yield [null, null, null];
+        yield [new \DateTimeImmutable('2022-01-01 10:00:00'), null, null];
+        yield [null, new \DateTimeImmutable('2022-01-31 10:00:00'), null];
+        yield [new \DateTimeImmutable('2022-01-01 10:00:00'), new \DateTimeImmutable('2022-01-31 10:00:00'), 'Europe/Berlin'];
+    }
+
     public function testGetFundraisingProgressPercentage(): void
     {
         $campaign = new CrowdfundingCampaign('Microsoft', 'Hololens', 'USD', 'US');
