@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\ApiPlatform\Model\Dto\InvestFund;
 use App\Repository\FundInvestmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
@@ -22,6 +23,16 @@ use Symfony\Component\Uid\Uuid;
  * @ApiResource(
  *   attributes={
  *     "security": "is_granted('ROLE_INVESTOR')",
+ *   },
+ *   collectionOperations={
+ *     "post"={
+ *       "input": InvestFund::class,
+ *     },
+ *     "clean_outdated_investment_attempts"={
+ *       "method": "DELETE",
+ *       "path": "/fund_investments/outdated_attempts",
+ *       "controller": "api_platform.action.delete_collection",
+ *     }
  *   }
  * )
  */
@@ -109,6 +120,7 @@ class FundInvestment
         $this->equityAmount = (int) $equityAmount->getAmount();
         $this->processingFeeAmount = (int) $processingFeeAmount->getAmount();
         $this->totalChargedAmount = (int) $equityAmount->add($processingFeeAmount)->getAmount();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
