@@ -151,4 +151,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
     }
+
+    public function getApiToken(): ?string
+    {
+        return 'my_custom_api_token';
+    }
 }
