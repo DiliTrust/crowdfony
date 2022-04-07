@@ -8,7 +8,6 @@ use App\Entity\CrowdfundingCampaign;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 final class CampaignInvestmentVoter extends Voter
 {
