@@ -21,6 +21,8 @@ use Money\Currency;
 use Money\Money;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(uniqueConstraints={
@@ -33,6 +35,20 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *   normalizationContext={
  *     "groups": {"crowdfunding_campaign:read"},
  *     "skip_null_values": false,
+ *   },
+ *   denormalizationContext={
+ *     "groups": {"crowdfunding_campaign:write"},
+ *   },
+ *   collectionOperations={
+ *     "get",
+ *     "post"={
+ *       "normalization_context"={
+ *           "groups"={
+ *             "crowdfunding_campaign:read",
+ *             "crowdfunding_campaign:read:item",
+ *           },
+ *        },
+ *     },
  *   },
  *   itemOperations={
  *     "get"={
@@ -101,7 +117,10 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example="Microsoft")
      *
-     * @Groups({"crowdfunding_campaign:read"})
+     * @Groups({"crowdfunding_campaign:read", "crowdfunding_campaign:write"})
+     *
+     * @Assert\NotBlank(message="Company name is required.")
+     * @Assert\Length(min=2, max=100)
      */
     private string $company = '';
 
@@ -112,7 +131,9 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example="Hololens")
      *
-     * @Groups({"crowdfunding_campaign:read"})
+     * @Groups({"crowdfunding_campaign:read", "crowdfunding_campaign:write"})
+     *
+     * @Assert\Length(min=2, max=100)
      */
     private string $project = '';
 
@@ -136,7 +157,12 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example="USD")
      *
-     * @Groups({"crowdfunding_campaign:read"})
+     * @Groups({"crowdfunding_campaign:read", "crowdfunding_campaign:write"})
+     *
+     * @Assert\NotBlank
+     * @Assert\Currency
+     *
+     * @todo check for supported currencies only
      */
     private string $currency = 'EUR';
 
@@ -147,7 +173,12 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example="US")
      *
-     * @Groups({"crowdfunding_campaign:read"})
+     * @Groups({"crowdfunding_campaign:read", "crowdfunding_campaign:write"})
+     *
+     * @Assert\NotBlank
+     * @Assert\Country
+     *
+     * @todo check for supported countries only
      */
     private string $country = 'FR';
 
@@ -158,7 +189,7 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example="Microsoft Hololens is revolutionary project for VR environments...")
      *
-     * @Groups({"crowdfunding_campaign:read:item"})
+     * @Groups({"crowdfunding_campaign:read:item", "crowdfunding_campaign:write"})
      */
     private ?string $description = null;
 
@@ -181,6 +212,20 @@ class CrowdfundingCampaign
      * Amount is expressed in the smallest unit of the money (i.e. cents).
      *
      * @ORM\Column(type="integer", nullable=true, options={"unsigned": true})
+     *
+     * @ApiProperty(example=5000000)
+     *
+     * @Groups({"crowdfunding_campaign:write"})
+     *
+     * @Assert\Range(
+     *   min=5000000,
+     *   max=1000000000,
+     *   minMessage="Minimum funding goal cannot be lower than 50K.",
+     *   maxMessage="Minimum funding goal cannot exceed 10M.",
+     *   notInRangeMessage="Minimum funding goal must be between 50K and 10M",
+     * )
+     *
+     * @todo check minimum funding goal per currency code
      */
     private ?int $minFundingTarget = null;
 
@@ -193,8 +238,28 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example=45000000)
      *
-     * @Groups({"crowdfunding_campaign:read"})
+     * @Groups({"crowdfunding_campaign:read", "crowdfunding_campaign:write"})
      * @SerializedName("fundingGoal")
+     *
+     * @Assert\Range(
+     *   min=5000000,
+     *   max=1000000000,
+     *   minMessage="Ideal funding goal cannot be lower than 50K.",
+     *   maxMessage="Ideal funding goal cannot exceed 10M.",
+     *   notInRangeMessage="Ideal funding goal must be between 50K and 10M",
+     * )
+     *
+     * @Assert\Expression(
+     *   expression="this.getIdealFundingTarget().greaterThanOrEqual(this.getMinFundingTarget())",
+     *   message="Ideal funding target must be greater than or equal the minimum funding target.",
+     * )
+     *
+     * @Assert\Expression(
+     *   expression="this.getIdealFundingTarget().lessThanOrEqual(this.getMaxFundingTarget())",
+     *   message="Ideal funding target must be lower than or equal the maximum funding target.",
+     * )
+     *
+     * @todo check minimum funding goal per currency code
      */
     private ?int $idealFundingTarget = null;
 
@@ -204,6 +269,18 @@ class CrowdfundingCampaign
      * Amount is expressed in the smallest unit of the money (i.e. cents).
      *
      * @ORM\Column(type="integer", nullable=true, options={"unsigned": true})
+     *
+     * @ApiProperty(example=1000000000)
+     *
+     * @Groups({"crowdfunding_campaign:write"})
+     *
+     * @Assert\Range(
+     *   min=5000000,
+     *   max=1000000000,
+     *   minMessage="Maximum funding goal cannot be lower than 50K.",
+     *   maxMessage="Maximum funding goal cannot exceed 10M.",
+     *   notInRangeMessage="Maximum funding goal must be between 50K and 10M",
+     * )
      */
     private ?int $maxFundingTarget = null;
 
@@ -214,9 +291,17 @@ class CrowdfundingCampaign
      *
      * @ORM\Column(type="datetime_immutable", nullable=true)
      *
-     * @ApiProperty(example="2022-03-04 09:00:00")
+     * @ApiProperty(
+     *   example="2022-03-04T09:00:00",
+     *   attributes={
+     *     "normalization_context"={
+     *       "datetime_format"="Y-m-d\TH:i:s",
+     *     }
+     * })
      *
-     * @Groups({"crowdfunding_campaign:read:item"})
+     * @Groups({"crowdfunding_campaign:read:item", "crowdfunding_campaign:write"})
+     *
+     * @Assert\Type("\DateTimeImmutable")
      */
     private ?\DateTimeImmutable $openingAt = null;
 
@@ -227,9 +312,19 @@ class CrowdfundingCampaign
      *
      * @ORM\Column(type="datetime_immutable", nullable=true)
      *
-     * @ApiProperty(example="2022-03-22 23:59:59")
+     * @ApiProperty(
+     *   example="2022-03-22T18:59:59",
+     *   attributes={
+     *     "normalization_context"={
+     *       "datetime_format"="Y-m-d\TH:i:s",
+     *     }
+     * })
      *
-     * @Groups({"crowdfunding_campaign:read:item"})
+     * @Groups({"crowdfunding_campaign:read:item", "crowdfunding_campaign:write"})
+     *
+     * @Assert\Type("\DateTimeImmutable")
+     *
+     * @todo ensure closing datetime is after opening datetime
      */
     private ?\DateTimeImmutable $closingAt = null;
 
@@ -240,7 +335,9 @@ class CrowdfundingCampaign
      *
      * @ApiProperty(example="America/Los_Angeles")
      *
-     * @Groups({"crowdfunding_campaign:read:item"})
+     * @Groups({"crowdfunding_campaign:read:item", "crowdfunding_campaign:write"})
+     *
+     * @Assert\Timezone
      */
     private ?string $timezone = null;
 
@@ -264,7 +361,11 @@ class CrowdfundingCampaign
      * @ORM\ManyToOne(targetEntity=ActivitySector::class, inversedBy="campaigns")
      * @ORM\JoinColumn(nullable=false, onDelete="RESTRICT")
      *
-     * @Groups({"crowdfunding_campaign:read"})
+     * @ApiProperty(example="/api/activity_sectors/18")
+     *
+     * @Groups({"crowdfunding_campaign:read", "crowdfunding_campaign:write"})
+     *
+     * @Assert\NotBlank
      */
     private ?ActivitySector $activitySector = null;
 
@@ -501,5 +602,25 @@ class CrowdfundingCampaign
         }
 
         return $this->getTotalCollectedFunds()->greaterThanOrEqual($fundingGoal);
+    }
+
+    public function isTimezoneRequired(): bool
+    {
+        return ($this->openingAt && $this->closingAt) && ! $this->timezone;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function ensureTimezoneIsSet(ExecutionContextInterface $context): void
+    {
+        if (! $this->isTimezoneRequired()) {
+            return;
+        }
+
+        $context
+            ->buildViolation('Timezone is required when campaign schedule is defined.')
+            ->atPath('timezone')
+            ->addViolation();
     }
 }
