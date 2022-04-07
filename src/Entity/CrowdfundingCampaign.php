@@ -42,6 +42,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *   collectionOperations={
  *     "get",
  *     "post"={
+ *       "security": "is_granted('ROLE_CAMPAIGN_MANAGER')",
  *       "normalization_context"={
  *           "groups"={
  *             "crowdfunding_campaign:read",
@@ -250,12 +251,12 @@ class CrowdfundingCampaign
      * )
      *
      * @Assert\Expression(
-     *   expression="this.getIdealFundingTarget().greaterThanOrEqual(this.getMinFundingTarget())",
+     *   expression="this.getIdealFundingTarget() and this.getIdealFundingTarget().greaterThanOrEqual(this.getMinFundingTarget())",
      *   message="Ideal funding target must be greater than or equal the minimum funding target.",
      * )
      *
      * @Assert\Expression(
-     *   expression="this.getIdealFundingTarget().lessThanOrEqual(this.getMaxFundingTarget())",
+     *   expression="this.getIdealFundingTarget() and this.getIdealFundingTarget().lessThanOrEqual(this.getMaxFundingTarget())",
      *   message="Ideal funding target must be lower than or equal the maximum funding target.",
      * )
      *
