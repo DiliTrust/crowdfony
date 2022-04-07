@@ -377,6 +377,8 @@ class CrowdfundingCampaign
      */
     private $fundInvestments;
 
+    public ?Money $lastInvestedAmount = null;
+
     public function __construct(string $company, ?string $project = null, string $currency = 'EUR', string $country = 'FR')
     {
         $this->company = $company;
@@ -581,7 +583,13 @@ class CrowdfundingCampaign
      */
     public function getTotalCollectedFunds(): Money
     {
-        return new Money(0, new Currency($this->currency));
+        $total = new Money(0, new Currency($this->currency));
+        foreach ($this->fundInvestments as $fundInvestment) {
+            \assert($fundInvestment instanceof FundInvestment);
+            $total = $total->add($fundInvestment->getEquityAmount());
+        }
+
+        return $total;
     }
 
     /**
@@ -661,5 +669,15 @@ class CrowdfundingCampaign
         }
 
         return $this;
+    }
+
+    public function isCollectingFunds(): bool
+    {
+        return $this->status === CampaignStatusType::COLLECTING_FUNDS;
+    }
+
+    public function hasRemainingFundAllocation(): bool
+    {
+        return true;
     }
 }
