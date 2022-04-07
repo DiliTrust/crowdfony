@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\FundInvestmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
@@ -17,6 +18,12 @@ use Symfony\Component\Uid\Uuid;
  *   }
  * )
  * @ORM\Entity(repositoryClass=FundInvestmentRepository::class)
+ *
+ * @ApiResource(
+ *   attributes={
+ *     "security": "is_granted('ROLE_INVESTOR')",
+ *   }
+ * )
  */
 class FundInvestment
 {
