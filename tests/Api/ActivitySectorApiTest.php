@@ -10,7 +10,39 @@ use App\Repository\ActivitySectorRepository;
 
 final class ActivitySectorApiTest extends ApiTestCase
 {
-    public function testGetCollection(): void
+    public function testGetCollectionWithAdministratorAccess(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/api/login', [
+            'json' => [
+                'username' => 'admin@example.com',
+                'password' => 'password',
+            ],
+        ]);
+
+        $client->request('GET', '/api/activity_sectors');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        // Asserts that the returned JSON is a superset of this one
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/ActivitySector',
+            '@id' => '/api/activity_sectors',
+            '@type' => 'hydra:Collection',
+            'hydra:totalItems' => 36,
+            'hydra:view' => [
+                '@id' => '/api/activity_sectors?page=1',
+                '@type' => 'hydra:PartialCollectionView',
+                'hydra:first' => '/api/activity_sectors?page=1',
+                'hydra:next' => '/api/activity_sectors?page=2',
+                'hydra:last' => '/api/activity_sectors?page=3',
+            ],
+        ]);
+    }
+
+    public function testGetCollectionWithAnonymousAccess(): void
     {
         $response = static::createClient()->request('GET', '/api/activity_sectors');
 

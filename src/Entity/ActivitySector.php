@@ -104,6 +104,14 @@ class ActivitySector
      * Whether the activity sector is browsable by the users.
      *
      * @ORM\Column(type="boolean", options={"default": 0})
+     *
+     * @Groups({"activity_sector:read"})
+     *
+     * @ApiProperty(
+     *   attributes={
+     *     "security": "is_granted('ROLE_ADMIN')",
+     *   }
+     * )
      */
     private bool $isEnabled = true;
 
