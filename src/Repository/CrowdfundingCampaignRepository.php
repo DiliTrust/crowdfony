@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\DBAL\Types\CampaignStatusType;
 use App\Entity\CrowdfundingCampaign;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,5 +47,13 @@ class CrowdfundingCampaignRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function excludeDraftingCampaigns(QueryBuilder $queryBuilder): void
+    {
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+
+        $queryBuilder->andWhere($queryBuilder->expr()->neq($rootAlias . '.status', ':drafting'))
+            ->setParameter('drafting', CampaignStatusType::DRAFTING);
     }
 }

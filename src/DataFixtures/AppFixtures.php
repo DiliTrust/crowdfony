@@ -6,8 +6,10 @@ namespace App\DataFixtures;
 
 use App\DBAL\Types\CampaignStatusType;
 use App\Entity\CrowdfundingCampaign;
+use App\Entity\User;
 use App\Factory\ActivitySectorFactory;
 use App\Factory\CrowdfundingCampaignFactory;
+use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -30,13 +32,36 @@ final class AppFixtures extends Fixture
 
         ActivitySectorFactory::createMany(24);
 
+
+        UserFactory::createMany(246);
+
+        UserFactory::createOne([
+            'emailAddress' => 'admin@example.com',
+            'roles' => [User::ADMIN],
+        ]);
+
+        UserFactory::createOne([
+            'emailAddress' => 'investor@example.com',
+            'roles' => [User::INVESTOR],
+        ]);
+
+        UserFactory::createOne([
+            'emailAddress' => 'campaign.manager@example.com',
+            'roles' => [User::CAMPAIGN_MANAGER],
+        ]);
+
+        UserFactory::createOne([
+            'emailAddress' => 'accountant@example.com',
+            'roles' => [User::ACCOUNTANT],
+        ]);
+
         CrowdfundingCampaignFactory::createMany(17);
 
         CrowdfundingCampaignFactory::createOne([
             'activitySector' => $financialServices,
             'company' => 'DiliTrust',
             'project' => 'Trust Suite',
-            'slug' => 'dilitrust--trust-suite',
+            'slug' => 'dilitrust-trust-suite',
             'currency' => 'EUR',
             'country' => 'FR',
             'timezone' => 'Europe/Paris',
